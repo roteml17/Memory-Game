@@ -88,33 +88,31 @@ namespace Ex02
             return value;
         }
 
-        public bool IsValidCardPlace(string i_CardPlace)
+        public bool IsValidCardPlace(int i_Column, int i_Row)
         {
             bool returnedVal = true;
 
-            if (i_CardPlace[0] - 'A' > m_BoardWidth || i_CardPlace[0] - 'A' < 0)
+            if (i_Column > m_BoardWidth || i_Column < 0)
             {
                 returnedVal = false;
             }
-            else if (i_CardPlace[1] - '0' > m_BoardHeight || i_CardPlace[1] - '0' < 0)
+            else if (i_Row > m_BoardHeight || i_Row < 0)
             {
                 returnedVal = false;
             }
             else
             {
-                OpenCardPlace(i_CardPlace);
+                OpenCardPlace(i_Column, i_Row);
             }
             return returnedVal;
         }
 
-        //not string
-        public void OpenCardPlace(string i_CardPlace)
+        public void OpenCardPlace(int i_Column, int i_Row)
         {
-            int i = i_CardPlace[0] - 'A';
-            int j = i_CardPlace[1] - '0' - 1;
-            m_Board[j,i].IsExposed = true;
+            m_Board[i_Row - 1, i_Column].IsExposed = true;
         }
 
+        //not string
         public void CheckIfMatchesCardsAndTurningThem(string i_CardPlace1, string i_CardPlace2)
         {
             int ColumnCard1 = i_CardPlace1[0] - 'A';

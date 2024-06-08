@@ -16,12 +16,18 @@ namespace Ex02
         private const int k_MaximumBoardBoundaries = 6;
         public UserInterface()
         {
-            Console.Write("Please enter your Name: ");
-            mr_UserName = Console.ReadLine();
-
-            GetBoardBoundaries();
+            m_BoardHeight = 0;
+            m_BoardWidth = 0;
         }
 
+        public string GetANameFromUser()
+        {
+            string playerName;
+            Console.Write("Please enter your Name: ");
+            playerName = Console.ReadLine();
+
+            return playerName;
+        }
         public void GetBoardBoundaries()
         {
             Console.Write("Please enter the board's height: ");
@@ -120,6 +126,14 @@ namespace Ex02
         {
             char[] arrey = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R' };
 
+
+            string player1Name = GetANameFromUser();
+            //string player2Name = GetANameFromUser();
+
+            Player player1 = new Player(player1Name, true);
+            //Player player2 = new Player(player2Name, true);
+            GetBoardBoundaries();
+
             Board board = new Board(m_BoardHeight, m_BoardWidth);
             board.InitializtingBoard();
 
@@ -133,8 +147,7 @@ namespace Ex02
                 GetACardPlaceFromUser(board);
                 Ex02.ConsoleUtils.Screen.Clear();
                 PrintBoard(board, arrey);
-                board.CheckIfMatchesCardsAndTurningThem()
-
+                //board.CheckIfMatchesCardsAndTurningThem();
             }
         }
 
@@ -145,7 +158,10 @@ namespace Ex02
             Console.Write("Please enter a card place: ");
             cardPlace = Console.ReadLine();
 
-            while (!i_Board.IsValidCardPlace(cardPlace))
+            int column = cardPlace[0] - 'A';
+            int row = cardPlace[1] - '0';
+
+            while (!i_Board.IsValidCardPlace(column, row))
             {
                 Console.Write("Invalid place, Please enter again: ");
                 cardPlace = Console.ReadLine();
