@@ -92,39 +92,55 @@ namespace Ex02
         {
             bool returnedVal = true;
 
-            if (i_Column > m_BoardWidth || i_Column < 0)
+            if (i_Column >= m_BoardWidth || i_Column < 0)
             {
                 returnedVal = false;
             }
-            else if (i_Row > m_BoardHeight || i_Row < 0)
+            else if (i_Row >= m_BoardHeight || i_Row < 0) 
             {
                 returnedVal = false;
+            }
+            return returnedVal;
+        }
+
+        public bool IsAlreadyExposed(int i_Column, int i_Row)
+        {
+            bool isExposedAlready = false;
+
+            if (m_Board[i_Row, i_Column].IsExposed)
+            {
+                isExposedAlready = true;
             }
             else
             {
                 OpenCardPlace(i_Column, i_Row);
             }
-            return returnedVal;
+
+            return isExposedAlready;
         }
 
         public void OpenCardPlace(int i_Column, int i_Row)
         {
-            m_Board[i_Row - 1, i_Column].IsExposed = true;
+            m_Board[i_Row, i_Column].IsExposed = true;
         }
 
-        //not string
-        public void CheckIfMatchesCardsAndTurningThem(string i_CardPlace1, string i_CardPlace2)
+        public bool CheckIfMatchesCardsAndTurningThem(int[] i_Card1, int[] i_Card2)
         {
-            int ColumnCard1 = i_CardPlace1[0] - 'A';
-            int RowsCard1 = i_CardPlace1[1] - '0' - 1;
-            int ColumnCard2 = i_CardPlace2[0] - 'A';
-            int RowsCard2 = i_CardPlace2[1] - '0' - 1;
+            int ColumnCard1 = i_Card1[0];
+            int RowsCard1 = i_Card1[1];
+            int ColumnCard2 = i_Card2[0];
+            int RowsCard2 = i_Card2[1];
+            bool cardAreEqual = true;
 
             if (m_Board[RowsCard1, ColumnCard1].Value != m_Board[RowsCard2, ColumnCard2].Value)
             {
                 m_Board[RowsCard1, ColumnCard1].IsExposed = false;
                 m_Board[RowsCard2, ColumnCard2].IsExposed = false;
+                cardAreEqual = false;
+                System.Threading.Thread.Sleep(2000);
             }
+
+            return cardAreEqual;
         }
     }
 }

@@ -13,22 +13,24 @@ namespace Ex02
         private string m_PlayerNmae;
         private int m_PlayerScore;
         private bool m_IsHuman;
+        bool m_MyTurn;
 
-        public Player(string i_Name, bool i_IsHuman)
+        public Player(string i_Name, bool i_IsHuman, bool i_MyTurn)
         {
             m_PlayerNmae = i_Name;
             m_IsHuman = i_IsHuman;
             m_PlayerScore = 0;
+            m_MyTurn = i_MyTurn;
         }
         public int[] Card1
         {
             get
             {
-                return Card1;
+                return m_Card1;
             }
             set
             {
-                Card1 = value;
+                m_Card1 = value;
             }
         }
 
@@ -36,11 +38,43 @@ namespace Ex02
         {
             get
             {
-                return Card2;
+                return m_Card2;
             }
             set
             {
-                Card2 = value;
+                m_Card2 = value;
+            }
+        }
+
+        public bool MyTurn
+        {
+            get
+            {
+                return m_MyTurn;
+            }
+            set
+            {
+                m_MyTurn = value;
+            }
+        }
+
+        public int Score
+        {
+            get
+            {
+                return m_PlayerScore;
+            }
+            set
+            {
+                m_PlayerScore = value;
+            }
+        }
+
+        public string Name
+        {
+            get
+            {
+                return m_PlayerNmae;
             }
         }
     }
