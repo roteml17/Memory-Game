@@ -41,6 +41,7 @@ namespace Ex02
         private cell[,] m_Board;
         private int m_BoardHeight;
         private int m_BoardWidth;
+        private int m_NumberOfPairsThatExposed;
 
         public cell[,] GameBoard
         {
@@ -54,7 +55,8 @@ namespace Ex02
         {
             m_BoardHeight = i_Height;
             m_BoardWidth = i_Width;
-            m_Board = new cell[i_Height, i_Width]; 
+            m_Board = new cell[i_Height, i_Width];
+            m_NumberOfPairsThatExposed = 0;
         }
 
         public void InitializtingBoard()
@@ -139,8 +141,24 @@ namespace Ex02
                 cardAreEqual = false;
                 System.Threading.Thread.Sleep(2000);
             }
+            else
+            {
+                m_NumberOfPairsThatExposed++;
+            }
 
             return cardAreEqual;
+        }
+
+        public bool CheckEndGame()
+        {
+            bool endGame = false;
+
+            if (m_NumberOfPairsThatExposed == (m_BoardHeight * m_BoardWidth) / 2)
+            {
+                endGame = true;
+            }
+
+            return endGame;
         }
     }
 }

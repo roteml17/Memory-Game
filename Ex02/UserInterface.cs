@@ -140,9 +140,9 @@ namespace Ex02
 
             PrintBoard(board, arrey);
 
-            while (true)
+            while (true) //continue if not press Q or want to play another game
             {
-                while (playerIsStillPlaying)
+                while (playerIsStillPlaying && !board.CheckEndGame())
                 {
                     Player currentPlayer = player1.MyTurn ? player1 : player2;
                     SelectCards(board, arrey, currentPlayer);
@@ -164,6 +164,13 @@ namespace Ex02
 
                 player1.MyTurn = currentTurn;
                 player2.MyTurn = !currentTurn;
+
+                if (board.CheckEndGame()) ///////
+                {
+                    Console.WriteLine("{0}: {1}", player1.Name, player1.Score);
+                    Console.WriteLine("{0}: {1}", player2.Name, player2.Score);
+                    break;
+                }
             }
         }
 
