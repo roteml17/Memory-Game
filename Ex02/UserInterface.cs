@@ -14,6 +14,9 @@ namespace Ex02
         private int m_BoardHeight;
         private int m_BoardWidth;
 
+        static int[] card1OfHumanPlayer = new int[2];
+        static int[] card2OfHumanPlayer = new int[2];
+
         private const int k_MinimumBoardBoundaries = 4;
         private const int k_MaximumBoardBoundaries = 6;
         public UserInterface()
@@ -246,6 +249,7 @@ namespace Ex02
                 }
                 returnedCardPlace[0] = row;
                 returnedCardPlace[1] = column;
+
             }
             return returnedCardPlace;
         }
@@ -253,7 +257,7 @@ namespace Ex02
         public bool SelectCards(Board i_Board, char[] i_Arrey, Player i_Player)
         {
             bool continueGame = true;
-
+           
             if (i_Player.IsHuman)
             {
                 Console.WriteLine("{0}, it's your turn!", i_Player.Name);
@@ -264,6 +268,7 @@ namespace Ex02
                 }
                 else
                 {
+                    card1OfHumanPlayer = i_Player.Card1;
                     Ex02.ConsoleUtils.Screen.Clear();
                     PrintBoard(i_Board, i_Arrey);
 
@@ -275,6 +280,7 @@ namespace Ex02
                     }
                     else
                     {
+                        card2OfHumanPlayer = i_Player.Card2;
                         Ex02.ConsoleUtils.Screen.Clear();
                         PrintBoard(i_Board, i_Arrey);
                     }
@@ -282,12 +288,15 @@ namespace Ex02
             }
             else
             {
+                i_Player.AddTheCardOfTheHumanToTheRememberArrey(card1OfHumanPlayer, i_Board);
+                i_Player.AddTheCardOfTheHumanToTheRememberArrey(card2OfHumanPlayer, i_Board);
+
                 Console.WriteLine("{0}, it's your turn!", i_Player.Name);
                 i_Player.Card1 = i_Player.ComputerIsPlaying(i_Board);
                 i_Board.OpenCardPlace(i_Player.Card1[0], i_Player.Card1[1]);
                 Ex02.ConsoleUtils.Screen.Clear();
                 PrintBoard(i_Board, i_Arrey);
-
+                System.Threading.Thread.Sleep(2000);
                 Console.WriteLine("{0}, it's your turn!", i_Player.Name);
                 i_Player.Card2 = i_Player.ComputerIsPlaying(i_Board);
                 i_Board.OpenCardPlace(i_Player.Card2[0], i_Player.Card2[1]);

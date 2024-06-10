@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -174,24 +175,12 @@ namespace Ex02
             int width = random.Next(i_board.Width);
             int[] randomCardChoseByComputer = { height, width }; // CHANGED: Switched order to match UserInterface
             int value = i_board.GameBoard[height, width].Value;
-            bool theCardIsAlreadyIn = false, theCardIsAlreadyExposed = false, weFoundANewCard = false;
+            bool theCardIsAlreadyIn, theCardIsAlreadyExposed, weFoundANewCard = false;
 
             while (!weFoundANewCard)
             {
-                for (int j = 0; j < m_CardKeepers[value].TheCardsThatExposed.Count; j++)
-                {
-                    // CHANGED: Switched order to match UserInterface
-                    if (randomCardChoseByComputer[0] == m_CardKeepers[value].TheCardsThatExposed[j][0] &&
-                                randomCardChoseByComputer[1] == m_CardKeepers[value].TheCardsThatExposed[j][1])
-                    {
-                        theCardIsAlreadyIn = true;
-                        break;
-                    }
-                }
-                if (i_board.GameBoard[height, width].IsExposed)
-                {
-                    theCardIsAlreadyExposed = true;
-                }
+                theCardIsAlreadyIn = CheckIfTheCardIsAlreadyInTheArrey(value, randomCardChoseByComputer);
+                theCardIsAlreadyExposed = CheckIfTheCardIsAlreadyExposed(height, width, i_board);
 
                 if (theCardIsAlreadyExposed || theCardIsAlreadyIn)
                 {
@@ -205,12 +194,62 @@ namespace Ex02
                 }
                 else
                 {
-                    m_CardKeepers[value].TheCardsThatExposed.Add(randomCardChoseByComputer); // CHANGED: Added clone to ensure original is not modified
-                    m_CardKeepers[value].CardsExposed++;
+                    AddACardToTheArrey(value, randomCardChoseByComputer);
                     weFoundANewCard = true;
                 }
             }
             return randomCardChoseByComputer;
+        }
+
+        public bool CheckIfTheCardIsAlreadyInTheArrey(int i_Value, int[] i_RandomCardChoseByComputer)
+        {
+            bool theCardIsAlreadyIn = false;
+
+            for (int j = 0; j < m_CardKeepers[i_Value].TheCardsThatExposed.Count; j++)
+            {
+                // CHANGED: Switched order to match UserInterface
+                if (i_RandomCardChoseByComputer[0] == m_CardKeepers[i_Value].TheCardsThatExposed[j][0] &&
+                            i_RandomCardChoseByComputer[1] == m_CardKeepers[i_Value].TheCardsThatExposed[j][1])
+                {
+                    theCardIsAlreadyIn = true;
+                    break;
+                }
+            }
+
+            return theCardIsAlreadyIn;
+        }
+
+        public bool CheckIfTheCardIsAlreadyExposed(int i_Height, int i_Width, Board i_board)
+        {
+            bool theCardIsAlreadyExposed = false;
+
+            if (i_board.GameBoard[i_Height, i_Width].IsExposed)
+            {
+                theCardIsAlreadyExposed = true;
+            }
+
+            return theCardIsAlreadyExposed;
+        }
+
+        public void AddACardToTheArrey(int i_Value, int[] i_RandomCardChoseByComputer)
+        {
+            m_CardKeepers[i_Value].TheCardsThatExposed.Add(i_RandomCardChoseByComputer); // CHANGED: Added clone to ensure original is not modified
+            m_CardKeepers[i_Value].CardsExposed++;
+        }
+
+        public void AddTheCardOfTheHumanToTheRememberArrey(int[] i_Card, Board i_board)
+        {
+            int value = i_board.GameBoard[i_Card[0], i_Card[1]].Value;
+            bool theCardIsAlreadyExposed, theCardIsAlreadyIn;
+
+            theCardIsAlreadyIn = CheckIfTheCardIsAlreadyInTheArrey(value, i_Card);
+            theCardIsAlreadyExposed = CheckIfTheCardIsAlreadyExposed(i_Card[0], i_Card[1], i_board);
+
+            if (!theCardIsAlreadyExposed && !theCardIsAlreadyIn)
+            {
+                AddACardToTheArrey(value, i_Card);
+            }
+
         }
     }
 }
