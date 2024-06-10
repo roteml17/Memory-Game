@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -153,7 +154,12 @@ namespace Ex02
                 while (playerIsStillPlaying && !board.CheckEndGame())
                 {
                     Player currentPlayer = player1.MyTurn ? player1 : player2;
-                    SelectCards(board, arrey, currentPlayer);
+                    if(!SelectCards(board, arrey, currentPlayer))
+                    {
+                        Ex02.ConsoleUtils.Screen.Clear();
+                        Console.WriteLine("Quitting the game...");
+                        return;
+                    }
 
                     if (board.CheckIfMatchesCardsAndTurningThem(currentPlayer.Card1, currentPlayer.Card2))
                     {
@@ -202,55 +208,77 @@ namespace Ex02
             Console.Write("Please enter a card place: ");
             cardPlace = Console.ReadLine();
 
-            int column = cardPlace[0] - 'A';
-            int row = cardPlace[1] - '0' - 1;
-
-            isValidLocation = i_Board.IsValidCardPlace(row, column);
-            if (isValidLocation)
+            if (cardPlace == "Q")
             {
-                isExposed = i_Board.IsAlreadyExposed(row, column);
+                returnedCardPlace = null;
             }
-
-            while (!isValidLocation || isExposed)
+            else
             {
-                if (!isValidLocation)
-                {
-                    Console.Write("Invalid place, Please enter again: ");
-                }
-                else if (isExposed)
-                {
-                    Console.Write("The card you chose is already exposed, Please enter again: ");
-                }
-
-                cardPlace = Console.ReadLine();
-                column = cardPlace[0] - 'A';
-                row = cardPlace[1] - '0' - 1;
+                int column = cardPlace[0] - 'A';
+                int row = cardPlace[1] - '0' - 1;
 
                 isValidLocation = i_Board.IsValidCardPlace(row, column);
                 if (isValidLocation)
                 {
                     isExposed = i_Board.IsAlreadyExposed(row, column);
                 }
-            }
-            returnedCardPlace[0] = row;
-            returnedCardPlace[1] = column;
 
+                while (!isValidLocation || isExposed)
+                {
+                    if (!isValidLocation)
+                    {
+                        Console.Write("Invalid place, Please enter again: ");
+                    }
+                    else if (isExposed)
+                    {
+                        Console.Write("The card you chose is already exposed, Please enter again: ");
+                    }
+
+                    cardPlace = Console.ReadLine();
+                    column = cardPlace[0] - 'A';
+                    row = cardPlace[1] - '0' - 1;
+
+                    isValidLocation = i_Board.IsValidCardPlace(row, column);
+                    if (isValidLocation)
+                    {
+                        isExposed = i_Board.IsAlreadyExposed(row, column);
+                    }
+                }
+                returnedCardPlace[0] = row;
+                returnedCardPlace[1] = column;
+            }
             return returnedCardPlace;
         }
 
-        public void SelectCards(Board i_Board, char[] i_Arrey, Player i_Player)
+        public bool SelectCards(Board i_Board, char[] i_Arrey, Player i_Player)
         {
+            bool continueGame = true;
+
             if (i_Player.IsHuman)
             {
                 Console.WriteLine("{0}, it's your turn!", i_Player.Name);
                 i_Player.Card1 = GetACardPlaceFromUser(i_Board);
-                Ex02.ConsoleUtils.Screen.Clear();
-                PrintBoard(i_Board, i_Arrey);
+                if (i_Player.Card1 == null)
+                {
+                    continueGame = false;
+                }
+                else
+                {
+                    Ex02.ConsoleUtils.Screen.Clear();
+                    PrintBoard(i_Board, i_Arrey);
 
-                Console.WriteLine("{0}, it's your turn!", i_Player.Name);
-                i_Player.Card2 = GetACardPlaceFromUser(i_Board);
-                Ex02.ConsoleUtils.Screen.Clear();
-                PrintBoard(i_Board, i_Arrey);
+                    Console.WriteLine("{0}, it's your turn!", i_Player.Name);
+                    i_Player.Card2 = GetACardPlaceFromUser(i_Board);
+                    if (i_Player.Card2 == null)
+                    {
+                        continueGame = false;
+                    }
+                    else
+                    {
+                        Ex02.ConsoleUtils.Screen.Clear();
+                        PrintBoard(i_Board, i_Arrey);
+                    }
+                }
             }
             else
             {
@@ -268,6 +296,7 @@ namespace Ex02
 
                 System.Threading.Thread.Sleep(2000);
             }
+            return continueGame;
         }
 
         public int ChooseBetweenComputerAndHuman()
