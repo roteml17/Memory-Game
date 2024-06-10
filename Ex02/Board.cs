@@ -59,6 +59,22 @@ namespace Ex02
             m_NumberOfPairsThatExposed = 0;
         }
 
+        public int Height
+        {
+            get
+            {
+                return m_BoardHeight;
+            }
+        }
+
+        public int Width
+        {
+            get
+            {
+                return m_BoardWidth;
+            }
+        }
+
         public void InitializtingBoard()
         {
             Random random = new Random();
@@ -160,5 +176,7 @@ namespace Ex02
 
             return endGame;
         }
+
+        
     }
 }

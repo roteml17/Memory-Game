@@ -29,6 +29,8 @@ namespace Ex02
 
             return playerName;
         }
+
+        //להפוך את השורות והעמודות
         public void GetBoardBoundaries()
         {
             Console.Write("Please enter the board's height: ");
@@ -36,7 +38,7 @@ namespace Ex02
 
             while (!ValidationCheckForBoardHeight())
             {
-                Console.Write("Unvalid Height, please enter again: ");
+                Console.Write("Height is out of boundaries, please enter again: ");
                 m_BoardHeight = int.Parse(Console.ReadLine());
             }
 
@@ -45,7 +47,7 @@ namespace Ex02
 
             while (!ValidationCheckForBoardWidth() || !CheckIfMultiplicationIsEven())
             {
-                Console.Write("Unvalid Width, please enter again: ");
+                Console.Write("Width is out of boundaries, please enter again: ");
                 m_BoardWidth = int.Parse(Console.ReadLine());
             }
         }
@@ -122,18 +124,32 @@ namespace Ex02
             }
         }
 
-
         public void RunGame()
         {
             char[] arrey = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R' };
+            bool playerIsStillPlaying = true, currentTurn = true, player2isHuman = false;
+            string player2Name, player1Name;
+            int againstComputerOrHuman = 0;
+            Player player2 = null;
 
-            string player1Name = GetANameFromUser();
-            string player2Name = GetANameFromUser();
-            bool playerIsStillPlaying = true, currentTurn = true;
-
+            player1Name = GetANameFromUser();
             Player player1 = new Player(player1Name, true, currentTurn);
-            Player player2 = new Player(player2Name, true, !currentTurn);
+
+            againstComputerOrHuman = ChooseBetweenComputerAndHuman();
+
+            if (againstComputerOrHuman == 2)
+            {
+                player2Name = GetANameFromUser();
+                player2isHuman = true;
+                player2 = new Player(player2Name, player2isHuman, !currentTurn);
+            }
+
             GetBoardBoundaries(); //את הבדיקה של הזוגי להעביר ללוגיקה
+
+            if (againstComputerOrHuman == 1)
+            {
+                player2 = new Player(player2isHuman, !currentTurn, (m_BoardHeight * m_BoardWidth) / 2);
+            }
 
             Board board = new Board(m_BoardHeight, m_BoardWidth);
             board.InitializtingBoard();
@@ -221,15 +237,53 @@ namespace Ex02
 
         public void SelectCards(Board i_Board, char[] i_Arrey, Player i_Player)
         {
-            Console.WriteLine("{0}, it's your turn!", i_Player.Name);
-            i_Player.Card1 = GetACardPlaceFromUser(i_Board);
-            Ex02.ConsoleUtils.Screen.Clear();
-            PrintBoard(i_Board, i_Arrey);
+            if (i_Player.IsHuman)
+            {
+                Console.WriteLine("{0}, it's your turn!", i_Player.Name);
+                i_Player.Card1 = GetACardPlaceFromUser(i_Board);
+                Ex02.ConsoleUtils.Screen.Clear();
+                PrintBoard(i_Board, i_Arrey);
 
-            Console.WriteLine("{0}, it's your turn!", i_Player.Name);
-            i_Player.Card2 = GetACardPlaceFromUser(i_Board);
-            Ex02.ConsoleUtils.Screen.Clear();
-            PrintBoard(i_Board, i_Arrey);
+                Console.WriteLine("{0}, it's your turn!", i_Player.Name);
+                i_Player.Card2 = GetACardPlaceFromUser(i_Board);
+                Ex02.ConsoleUtils.Screen.Clear();
+                PrintBoard(i_Board, i_Arrey);
+            }
+            else
+            {
+                i_Player.ComputerIsPlaying(i_Board);
+            }
+        }
+
+        public int ChooseBetweenComputerAndHuman()
+        {
+            int theUserChose;
+
+            Console.WriteLine("Would you like to play against another player or against the computer?");
+            Console.WriteLine("(1) Computer");
+            Console.WriteLine("(2) Another player");
+
+            theUserChose = int.Parse(Console.ReadLine());
+
+            while (!ValidationCheckForComputerVsHuman(theUserChose))
+            {
+                Console.Write("Unvalid choose! Please choose between 1 or 2: ");
+                theUserChose = int.Parse(Console.ReadLine());
+            }
+
+            return theUserChose;
+        }
+
+        public bool ValidationCheckForComputerVsHuman(int i_TheUserChose)
+        {
+            bool validChoose = true;
+
+            if (i_TheUserChose != 1 && i_TheUserChose != 2)
+            {
+                validChoose = false;
+            }
+
+            return validChoose;
         }
     }
 }
