@@ -30,7 +30,6 @@ namespace Ex02
             return playerName;
         }
 
-        //להפוך את השורות והעמודות
         public void GetBoardBoundaries()
         {
             Console.Write("Please enter the board's height: ");
@@ -56,7 +55,7 @@ namespace Ex02
         {
             bool validHeight = true;
 
-            if (m_BoardHeight < k_MinimumBoardBoundaries || 
+            if (m_BoardHeight < k_MinimumBoardBoundaries ||
                 m_BoardHeight > k_MaximumBoardBoundaries)
             {
                 validHeight = false;
@@ -202,10 +201,10 @@ namespace Ex02
             int column = cardPlace[0] - 'A';
             int row = cardPlace[1] - '0' - 1;
 
-            isValidLocation = i_Board.IsValidCardPlace(column, row);
+            isValidLocation = i_Board.IsValidCardPlace(row, column);
             if (isValidLocation)
             {
-                isExposed = i_Board.IsAlreadyExposed(column, row);
+                isExposed = i_Board.IsAlreadyExposed(row, column);
             }
 
             while (!isValidLocation || isExposed)
@@ -223,14 +222,14 @@ namespace Ex02
                 column = cardPlace[0] - 'A';
                 row = cardPlace[1] - '0' - 1;
 
-                isValidLocation = i_Board.IsValidCardPlace(column, row);
+                isValidLocation = i_Board.IsValidCardPlace(row, column);
                 if (isValidLocation)
                 {
-                    isExposed = i_Board.IsAlreadyExposed(column, row);
+                    isExposed = i_Board.IsAlreadyExposed(row, column);
                 }
             }
-            returnedCardPlace[0] = column;
-            returnedCardPlace[1] = row;
+            returnedCardPlace[0] = row;
+            returnedCardPlace[1] = column;
 
             return returnedCardPlace;
         }
@@ -253,15 +252,17 @@ namespace Ex02
             {
                 Console.WriteLine("{0}, it's your turn!", i_Player.Name);
                 i_Player.Card1 = i_Player.ComputerIsPlaying(i_Board);
-                i_Board.OpenCardPlace(i_Player.Card1[1], i_Player.Card1[0]);
+                i_Board.OpenCardPlace(i_Player.Card1[0], i_Player.Card1[1]);
                 Ex02.ConsoleUtils.Screen.Clear();
                 PrintBoard(i_Board, i_Arrey);
 
                 Console.WriteLine("{0}, it's your turn!", i_Player.Name);
                 i_Player.Card2 = i_Player.ComputerIsPlaying(i_Board);
-                i_Board.OpenCardPlace(i_Player.Card2[1], i_Player.Card2[0]);
+                i_Board.OpenCardPlace(i_Player.Card2[0], i_Player.Card2[1]);
                 Ex02.ConsoleUtils.Screen.Clear();
                 PrintBoard(i_Board, i_Arrey);
+
+                System.Threading.Thread.Sleep(2000);
             }
         }
 

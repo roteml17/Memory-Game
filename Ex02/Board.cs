@@ -106,7 +106,7 @@ namespace Ex02
             return value;
         }
 
-        public bool IsValidCardPlace(int i_Column, int i_Row)
+        public bool IsValidCardPlace(int i_Row, int i_Column)
         {
             bool returnedVal = true;
 
@@ -114,14 +114,14 @@ namespace Ex02
             {
                 returnedVal = false;
             }
-            else if (i_Row >= m_BoardHeight || i_Row < 0) 
+            else if (i_Row >= m_BoardHeight || i_Row < 0)
             {
                 returnedVal = false;
             }
             return returnedVal;
         }
 
-        public bool IsAlreadyExposed(int i_Column, int i_Row)
+        public bool IsAlreadyExposed(int i_Row, int i_Column)
         {
             bool isExposedAlready = false;
 
@@ -131,23 +131,23 @@ namespace Ex02
             }
             else
             {
-                OpenCardPlace(i_Column, i_Row);
+                OpenCardPlace(i_Row, i_Column);
             }
 
             return isExposedAlready;
         }
 
-        public void OpenCardPlace(int i_Column, int i_Row)
+        public void OpenCardPlace(int i_Row, int i_Column)
         {
             m_Board[i_Row, i_Column].IsExposed = true;
         }
 
         public bool CheckIfMatchesCardsAndTurningThem(int[] i_Card1, int[] i_Card2)
         {
-            int ColumnCard1 = i_Card1[0];
-            int RowsCard1 = i_Card1[1];
-            int ColumnCard2 = i_Card2[0];
-            int RowsCard2 = i_Card2[1];
+            int RowsCard1 = i_Card1[0];
+            int ColumnCard1 = i_Card1[1];
+            int RowsCard2 = i_Card2[0];
+            int ColumnCard2 = i_Card2[1];
             bool cardAreEqual = true;
 
             if (m_Board[RowsCard1, ColumnCard1].Value != m_Board[RowsCard2, ColumnCard2].Value)
@@ -177,6 +177,6 @@ namespace Ex02
             return endGame;
         }
 
-        
+
     }
 }
