@@ -75,6 +75,18 @@ namespace Ex02
             }
         }
 
+        public static bool CheckIfMultiplicationIsEven(int i_BoardHeight, int i_BoardWidth)
+        {
+            bool evenMultiplication = true;
+
+            if ((i_BoardHeight * i_BoardWidth) % 2 != 0)
+            {
+                evenMultiplication = false;
+            }
+
+            return evenMultiplication;
+        }
+
         public void InitializtingBoard()
         {
             Random random = new Random();
@@ -176,7 +188,5 @@ namespace Ex02
 
             return endGame;
         }
-
-
     }
 }

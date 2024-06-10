@@ -44,7 +44,7 @@ namespace Ex02
             Console.Write("Please enter the board's width: ");
             m_BoardWidth = int.Parse(Console.ReadLine());
 
-            while (!ValidationCheckForBoardWidth() || !CheckIfMultiplicationIsEven())
+            while (!ValidationCheckForBoardWidth() || !Board.CheckIfMultiplicationIsEven(m_BoardHeight, m_BoardWidth))
             {
                 Console.Write("Width is out of boundaries, please enter again: ");
                 m_BoardWidth = int.Parse(Console.ReadLine());
@@ -75,19 +75,6 @@ namespace Ex02
             }
 
             return validWidth;
-        }
-
-        //move to logic
-        public bool CheckIfMultiplicationIsEven()
-        {
-            bool evenMultiplication = true;
-
-            if ((m_BoardHeight * m_BoardWidth) % 2 != 0)
-            {
-                evenMultiplication = false;
-            }
-
-            return evenMultiplication;
         }
 
         public void PrintBoard(Board i_Board, char[] i_Arrey)
@@ -130,6 +117,8 @@ namespace Ex02
             string player2Name, player1Name;
             int againstComputerOrHuman = 0;
             Player player2 = null;
+            Board board = new Board();
+            bool isNewGame = true;
 
             player1Name = GetANameFromUser();
             Player player1 = new Player(player1Name, true, currentTurn);
@@ -143,20 +132,24 @@ namespace Ex02
                 player2 = new Player(player2Name, player2isHuman, !currentTurn);
             }
 
-            GetBoardBoundaries(); //את הבדיקה של הזוגי להעביר ללוגיקה
-
-            if (againstComputerOrHuman == 1)
-            {
-                player2 = new Player(player2isHuman, !currentTurn, (m_BoardHeight * m_BoardWidth) / 2);
-            }
-
-            Board board = new Board(m_BoardHeight, m_BoardWidth);
-            board.InitializtingBoard();
-
-            PrintBoard(board, arrey);
-
             while (true) //continue if not press Q or want to play another game
             {
+                if (isNewGame)
+                {
+                    GetBoardBoundaries();
+
+                    if (againstComputerOrHuman == 1)
+                    {
+                        player2 = new Player(player2isHuman, !currentTurn, (m_BoardHeight * m_BoardWidth) / 2);
+                    }
+
+                    board = new Board(m_BoardHeight, m_BoardWidth);
+                    board.InitializtingBoard();
+
+                    PrintBoard(board, arrey);
+                    isNewGame = false;
+                }
+
                 while (playerIsStillPlaying && !board.CheckEndGame())
                 {
                     Player currentPlayer = player1.MyTurn ? player1 : player2;
@@ -184,7 +177,18 @@ namespace Ex02
                 {
                     Console.WriteLine("{0}: {1}", player1.Name, player1.Score);
                     Console.WriteLine("{0}: {1}", player2.Name, player2.Score);
-                    break;
+
+                    Console.Write("Do you want to play another game? Y/N: ");
+                    char response = char.Parse(Console.ReadLine().ToUpper());
+                    if (response == 'N')
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        Ex02.ConsoleUtils.Screen.Clear();
+                        isNewGame = true; 
+                    }
                 }
             }
         }
@@ -295,6 +299,11 @@ namespace Ex02
             }
 
             return validChoose;
+        }
+
+        public void GetBoardBoundariesAndInitializtingBoard()
+        {
+
         }
     }
 }
