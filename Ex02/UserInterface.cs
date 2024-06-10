@@ -251,7 +251,17 @@ namespace Ex02
             }
             else
             {
-                i_Player.ComputerIsPlaying(i_Board);
+                Console.WriteLine("{0}, it's your turn!", i_Player.Name);
+                i_Player.Card1 = i_Player.ComputerIsPlaying(i_Board);
+                i_Board.OpenCardPlace(i_Player.Card1[1], i_Player.Card1[0]);
+                Ex02.ConsoleUtils.Screen.Clear();
+                PrintBoard(i_Board, i_Arrey);
+
+                Console.WriteLine("{0}, it's your turn!", i_Player.Name);
+                i_Player.Card2 = i_Player.ComputerIsPlaying(i_Board);
+                i_Board.OpenCardPlace(i_Player.Card2[1], i_Player.Card2[0]);
+                Ex02.ConsoleUtils.Screen.Clear();
+                PrintBoard(i_Board, i_Arrey);
             }
         }
 

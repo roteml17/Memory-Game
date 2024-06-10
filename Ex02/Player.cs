@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -24,6 +25,10 @@ namespace Ex02
                 get
                 {
                     return numberOfCardsThatExposed;
+                }
+                set 
+                { 
+                    numberOfCardsThatExposed = value; 
                 }
             }
 
@@ -62,6 +67,10 @@ namespace Ex02
 
             m_sizeCardKeepers = i_BoardSize;
             m_CardKeepers = new List<CardKeeper>(i_BoardSize);
+            for (int i = 0; i < i_BoardSize; i++)
+            {
+                m_CardKeepers.Add(new CardKeeper());
+            }
         }
 
         public int[] Card1
@@ -128,40 +137,80 @@ namespace Ex02
             }
         }
 
-        public void ComputerIsPlaying(Board i_board)
+        public int[] ComputerIsPlaying(Board i_board)
         {
             Random random = new Random();
+            int[] cardFounded = new int[2];
+            bool cardFoundedIsTrue = false;
 
             for (int i = 0; i < m_sizeCardKeepers; i++)
             {
                 if (m_CardKeepers[i].CardsExposed == 2)
                 {
-                    m_Card1 = m_CardKeepers[i].TheCardsThatExposed[0];
-                    m_Card2 = m_CardKeepers[i].TheCardsThatExposed[1];
-                    break;
+                    if (!i_board.GameBoard[m_CardKeepers[i].TheCardsThatExposed[0][0], m_CardKeepers[i].TheCardsThatExposed[0][1]].IsExposed)
+                    {
+                        cardFounded = m_CardKeepers[i].TheCardsThatExposed[0];
+                        cardFoundedIsTrue = true;
+                        break;
+                    }
+                    else if (!i_board.GameBoard[m_CardKeepers[i].TheCardsThatExposed[1][0], m_CardKeepers[i].TheCardsThatExposed[1][1]].IsExposed)
+                    {
+                        cardFounded = m_CardKeepers[i].TheCardsThatExposed[1];
+                        cardFoundedIsTrue = true;
+                        break;
+                    }
                 }
             }
-            m_Card1 = ChooseARandomCardForComputer(random, i_board);
+            if (!cardFoundedIsTrue)
+            {
+                cardFounded = ChooseARandomCardForComputer(random, i_board);
+            }
+            return cardFounded;
         }
 
         public int[] ChooseARandomCardForComputer(Random random, Board i_board)
         {
-            int height =  random.Next(i_board.Height);
+            int height = random.Next(i_board.Height);
             int width = random.Next(i_board.Width);
-            int[] placeInBoard = { height, width };
+            int[] randomCardChoseByComputer = { height, width };
+            int value = i_board.GameBoard[height, width].Value;
+            bool theCardIsAlreadyIn = false, theCardIsAlreadyExposed = false, weFoundANewCard = false;
 
-            for (int i = 0; i < m_sizeCardKeepers; i++)
+            while (!weFoundANewCard)
             {
-                for (int j = 0; j < m_CardKeepers[i].TheCardsThatExposed.Count; j++)
+                for (int j = 0; j < m_CardKeepers[value].TheCardsThatExposed.Count; j++)
                 {
-                    if (placeInBoard[0] == m_CardKeepers[i].TheCardsThatExposed[j][0] &&
-                            placeInBoard[1] == m_CardKeepers[i].TheCardsThatExposed[j][1])
+                    if (randomCardChoseByComputer[0] == m_CardKeepers[value].TheCardsThatExposed[j][0] &&
+                                randomCardChoseByComputer[1] == m_CardKeepers[value].TheCardsThatExposed[j][1])
                     {
-                        
+                        theCardIsAlreadyIn = true;
+                        break;
                     }
                 }
+                if (i_board.GameBoard[height, width].IsExposed)
+                {
+                    theCardIsAlreadyExposed = true;
+                }
+
+                if (theCardIsAlreadyExposed || theCardIsAlreadyIn)
+                {
+                    height = random.Next(i_board.Height);
+                    width = random.Next(i_board.Width);
+                    randomCardChoseByComputer[0] = height;
+                    randomCardChoseByComputer[1] = width;
+                    value = i_board.GameBoard[height, width].Value;
+
+                    theCardIsAlreadyExposed = theCardIsAlreadyIn = false;
+                }
+                else
+                {
+                    m_CardKeepers[value].TheCardsThatExposed.Add(randomCardChoseByComputer);
+                    m_CardKeepers[value].CardsExposed++;
+                    weFoundANewCard = true;
+                }
+
             }
-            return placeInBoard;
+            return randomCardChoseByComputer;
         }
     }
 }
