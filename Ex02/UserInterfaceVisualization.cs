@@ -200,5 +200,15 @@ namespace Ex02
             return validChoose;
         }
 
+        public char EndOfGameMessage(Player i_Player1, Player i_Player2)
+        {
+            Console.WriteLine("{0}: {1}", i_Player1.Name, i_Player1.Score);
+            Console.WriteLine("{0}: {1}", i_Player2.Name, i_Player2.Score);
+            Console.Write("Do you want to play another game? Y/N: ");
+            char response = char.Parse(Console.ReadLine().ToUpper());
+
+            return response;
+        }
+
     }
 }

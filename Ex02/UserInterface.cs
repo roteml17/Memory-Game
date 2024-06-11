@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.Remoting.Channels;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,16 +30,14 @@ namespace Ex02
         public void RunGame()
         {
             char[] arrey = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R' };
-            bool playerIsStillPlaying = true, currentTurn = true, player2isHuman = false;
+            bool playerIsStillPlaying = true, currentTurn = true, player2isHuman = false, isNewGame = true;
             string player2Name, player1Name;
             int againstComputerOrHuman = 0;
             Player player2 = null;
             Board board = new Board();
-            bool isNewGame = true;
 
             player1Name = visualization.GetANameFromUser();
             Player player1 = new Player(player1Name, true, currentTurn);
-
             againstComputerOrHuman = visualization.ChooseBetweenComputerAndHuman();
 
             if (againstComputerOrHuman == 2)
@@ -48,59 +47,35 @@ namespace Ex02
                 player2 = new Player(player2Name, player2isHuman, !currentTurn);
             }
 
-            while (true) //continue if not press Q or want to play another game
+            while (true)
             {
                 if (isNewGame)
                 {
-                    visualization.GetBoardBoundaries(ref m_BoardHeight,ref m_BoardWidth);
-
-                    if (againstComputerOrHuman == 1)
-                    {
-                        player2 = new Player(player2isHuman, !currentTurn, (m_BoardHeight * m_BoardWidth) / 2);
-                    }
-
-                    board = new Board(m_BoardHeight, m_BoardWidth);
-                    board.InitializtingBoard();
-
-                    visualization.PrintBoard(board, arrey, m_BoardHeight, m_BoardWidth);
+                    InitializeNewGame(out board, ref player2, player2isHuman, currentTurn,
+                                       arrey, againstComputerOrHuman);
                     isNewGame = false;
                 }
 
                 while (playerIsStillPlaying && !gameLogic.CheckEndGame(board))
                 {
                     Player currentPlayer = player1.MyTurn ? player1 : player2;
-                    if(!SelectCards(board, arrey, currentPlayer))
+                    if (!SelectCards(board, arrey, currentPlayer))
                     {
                         Ex02.ConsoleUtils.Screen.Clear();
                         Console.WriteLine("Quitting the game...");
                         return;
                     }
-
-                    if (gameLogic.CheckIfMatchesCardsAndTurningThem(currentPlayer.Card1, currentPlayer.Card2, board))
-                    {
-                        currentPlayer.Score++;
-                    }
-                    else
-                    {
-                        Ex02.ConsoleUtils.Screen.Clear();
-                        visualization.PrintBoard(board, arrey, m_BoardHeight, m_BoardWidth);
-                        playerIsStillPlaying = false;
-                    }
+                    Turn(currentPlayer, board, arrey, ref playerIsStillPlaying);
                 }
 
                 playerIsStillPlaying = true;
                 currentTurn = !currentTurn;
-
                 player1.MyTurn = currentTurn;
                 player2.MyTurn = !currentTurn;
 
-                if (gameLogic.CheckEndGame(board)) ///////
+                if (gameLogic.CheckEndGame(board))
                 {
-                    Console.WriteLine("{0}: {1}", player1.Name, player1.Score);
-                    Console.WriteLine("{0}: {1}", player2.Name, player2.Score);
-
-                    Console.Write("Do you want to play another game? Y/N: ");
-                    char response = char.Parse(Console.ReadLine().ToUpper());
+                    char response = visualization.EndOfGameMessage(player1, player2);
                     if (response == 'N')
                     {
                         break;
@@ -108,6 +83,7 @@ namespace Ex02
                     else
                     {
                         Ex02.ConsoleUtils.Screen.Clear();
+                        gameLogic.PairsThatExposed = 0;
                         isNewGame = true; 
                     }
                 }
@@ -167,5 +143,35 @@ namespace Ex02
             }
             return continueGame;
         }
+
+        public void InitializeNewGame(out Board o_Board, ref Player io_Player2, bool i_Player2isHuman, 
+                                       bool i_CurrentTurn, char[] i_Arrey, int i_AgainstComputerOrHuman)
+        {
+            visualization.GetBoardBoundaries(ref m_BoardHeight, ref m_BoardWidth);
+            if (i_AgainstComputerOrHuman == 1)
+            {
+                io_Player2 = new Player(i_Player2isHuman, !i_CurrentTurn, (m_BoardHeight * m_BoardWidth) / 2);
+            }
+
+            o_Board = new Board(m_BoardHeight, m_BoardWidth);
+            o_Board.InitializtingBoard();
+
+            visualization.PrintBoard(o_Board, i_Arrey, m_BoardHeight, m_BoardWidth);
+        }
+
+        public void Turn(Player i_CurrentPlayer, Board i_Board, char[] i_Arrey, ref bool io_PlayerIsStillPlaying)
+        {
+
+            if (gameLogic.CheckIfMatchesCardsAndTurningThem(i_CurrentPlayer.Card1, i_CurrentPlayer.Card2, i_Board))
+            {
+                i_CurrentPlayer.Score++;
+            }
+            else
+            {
+                Ex02.ConsoleUtils.Screen.Clear();
+                visualization.PrintBoard(i_Board, i_Arrey, m_BoardHeight, m_BoardWidth);
+                io_PlayerIsStillPlaying = false;
+            }
+        }   
     }
 }

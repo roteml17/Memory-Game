@@ -41,7 +41,6 @@ namespace Ex02
         private cell[,] m_Board;
         private int m_BoardHeight;
         private int m_BoardWidth;
-        private int m_NumberOfPairsThatExposed;
 
         public cell[,] GameBoard
         {
@@ -72,7 +71,6 @@ namespace Ex02
             m_BoardHeight = i_Height;
             m_BoardWidth = i_Width;
             m_Board = new cell[i_Height, i_Width];
-            m_NumberOfPairsThatExposed = 0;
         }
 
         public static bool CheckIfMultiplicationIsEven(int i_BoardHeight, int i_BoardWidth)

@@ -15,6 +15,17 @@ namespace Ex02
             m_NumberOfPairsThatExposed = 0;
         }
 
+        public int PairsThatExposed
+        {
+            get
+            {
+                return m_NumberOfPairsThatExposed;
+            }
+            set
+            {
+                m_NumberOfPairsThatExposed = value;
+            }
+        }
         public bool CheckIfMatchesCardsAndTurningThem(int[] i_Card1, int[] i_Card2, Board i_Board)
         {
             int RowsCard1 = i_Card1[0];
