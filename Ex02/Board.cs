@@ -51,14 +51,6 @@ namespace Ex02
             }
         }
 
-        public Board(int i_Height, int i_Width)
-        {
-            m_BoardHeight = i_Height;
-            m_BoardWidth = i_Width;
-            m_Board = new cell[i_Height, i_Width];
-            m_NumberOfPairsThatExposed = 0;
-        }
-
         public int Height
         {
             get
@@ -75,6 +67,14 @@ namespace Ex02
             }
         }
 
+        public Board(int i_Height, int i_Width)
+        {
+            m_BoardHeight = i_Height;
+            m_BoardWidth = i_Width;
+            m_Board = new cell[i_Height, i_Width];
+            m_NumberOfPairsThatExposed = 0;
+        }
+
         public static bool CheckIfMultiplicationIsEven(int i_BoardHeight, int i_BoardWidth)
         {
             bool evenMultiplication = true;
@@ -89,7 +89,7 @@ namespace Ex02
 
         public void InitializtingBoard()
         {
-            Random random = new Random();
+            Random randomNumberToPutInBoard = new Random();
             int countOfNumbersOfValues = (m_BoardHeight * m_BoardWidth) / 2;
             int[] valuesOccurrences = new int[countOfNumbersOfValues];
 
@@ -98,19 +98,19 @@ namespace Ex02
                 for (int j = 0; j < m_BoardWidth; j++)
                 {
                     m_Board[i, j].IsExposed = false;
-                    int value = ChooseTheValueToPutIn(valuesOccurrences, random);
+                    int value = ChooseTheValueToPutIn(valuesOccurrences, randomNumberToPutInBoard);
                     m_Board[i, j].Value = value;
                 }
             }
         }
 
-        public int ChooseTheValueToPutIn(int[] i_ValuesOccurrences, Random random)
+        public int ChooseTheValueToPutIn(int[] i_ValuesOccurrences, Random i_RandomNumberToPutInBoard)
         {
-            int value = random.Next(i_ValuesOccurrences.Length);
+            int value = i_RandomNumberToPutInBoard.Next(i_ValuesOccurrences.Length);
 
             while (i_ValuesOccurrences[value] == 2)
             {
-                value = random.Next(i_ValuesOccurrences.Length);
+                value = i_RandomNumberToPutInBoard.Next(i_ValuesOccurrences.Length);
             }
 
             i_ValuesOccurrences[value]++;
@@ -130,6 +130,7 @@ namespace Ex02
             {
                 returnedVal = false;
             }
+
             return returnedVal;
         }
 
@@ -152,41 +153,6 @@ namespace Ex02
         public void OpenCardPlace(int i_Row, int i_Column)
         {
             m_Board[i_Row, i_Column].IsExposed = true;
-        }
-
-        public bool CheckIfMatchesCardsAndTurningThem(int[] i_Card1, int[] i_Card2)
-        {
-            int RowsCard1 = i_Card1[0];
-            int ColumnCard1 = i_Card1[1];
-            int RowsCard2 = i_Card2[0];
-            int ColumnCard2 = i_Card2[1];
-            bool cardAreEqual = true;
-
-            if (m_Board[RowsCard1, ColumnCard1].Value != m_Board[RowsCard2, ColumnCard2].Value)
-            {
-                m_Board[RowsCard1, ColumnCard1].IsExposed = false;
-                m_Board[RowsCard2, ColumnCard2].IsExposed = false;
-                cardAreEqual = false;
-                System.Threading.Thread.Sleep(2000);
-            }
-            else
-            {
-                m_NumberOfPairsThatExposed++;
-            }
-
-            return cardAreEqual;
-        }
-
-        public bool CheckEndGame()
-        {
-            bool endGame = false;
-
-            if (m_NumberOfPairsThatExposed == (m_BoardHeight * m_BoardWidth) / 2)
-            {
-                endGame = true;
-            }
-
-            return endGame;
         }
     }
 }

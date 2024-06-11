@@ -11,24 +11,24 @@ namespace Ex02
     {
         internal class CardKeeper
         {
-            private int numberOfCardsThatExposed;
-            private List<int[]> theCardsThatExposed;
+            private int m_NumberOfCardsThatExposed;
+            private List<int[]> m_TheCardsThatExposed;
 
             public CardKeeper()
             {
-                numberOfCardsThatExposed = 0;
-                theCardsThatExposed = new List<int[]>();
+                m_NumberOfCardsThatExposed = 0;
+                m_TheCardsThatExposed = new List<int[]>();
             }
 
             public int CardsExposed
             {
                 get
                 {
-                    return numberOfCardsThatExposed;
+                    return m_NumberOfCardsThatExposed;
                 }
                 set
                 {
-                    numberOfCardsThatExposed = value;
+                    m_NumberOfCardsThatExposed = value;
                 }
             }
 
@@ -36,7 +36,7 @@ namespace Ex02
             {
                 get
                 {
-                    return theCardsThatExposed;
+                    return m_TheCardsThatExposed;
                 }
             }
         }
@@ -47,7 +47,7 @@ namespace Ex02
         private int m_PlayerScore;
         private bool m_IsHuman;
         bool m_MyTurn;
-        int m_sizeCardKeepers;
+        int m_SizeCardKeepers;
         List<CardKeeper> m_CardKeepers;
 
         public Player(string i_Name, bool i_IsHuman, bool i_MyTurn)
@@ -65,7 +65,7 @@ namespace Ex02
             m_PlayerScore = 0;
             m_MyTurn = i_MyTurn;
 
-            m_sizeCardKeepers = i_BoardSize;
+            m_SizeCardKeepers = i_BoardSize;
             m_CardKeepers = new List<CardKeeper>(i_BoardSize);
             for (int i = 0; i < i_BoardSize; i++)
             {
@@ -137,24 +137,25 @@ namespace Ex02
             }
         }
 
-        public int[] ComputerIsPlaying(Board i_board)
+        public int[] ComputerIsPlaying(Board i_Board)
         {
-            Random random = new Random();
+            Random randomComputerChoose = new Random();
             int[] cardFounded = new int[2];
             bool cardFoundedIsTrue = false;
 
-            for (int i = 0; i < m_sizeCardKeepers; i++)
+            for (int i = 0; i < m_SizeCardKeepers; i++)
             {
                 if (m_CardKeepers[i].CardsExposed == 2)
                 {
-                    // CHANGED: Switched indices to match UserInterface
-                    if (!i_board.GameBoard[m_CardKeepers[i].TheCardsThatExposed[0][0], m_CardKeepers[i].TheCardsThatExposed[0][1]].IsExposed)
+                    if (!i_Board.GameBoard[m_CardKeepers[i].TheCardsThatExposed[0][0], 
+                        m_CardKeepers[i].TheCardsThatExposed[0][1]].IsExposed)
                     {
                         cardFounded = m_CardKeepers[i].TheCardsThatExposed[0];
                         cardFoundedIsTrue = true;
                         break;
                     }
-                    else if (!i_board.GameBoard[m_CardKeepers[i].TheCardsThatExposed[1][0], m_CardKeepers[i].TheCardsThatExposed[1][1]].IsExposed)
+                    else if (!i_Board.GameBoard[m_CardKeepers[i].TheCardsThatExposed[1][0],
+                        m_CardKeepers[i].TheCardsThatExposed[1][1]].IsExposed)
                     {
                         cardFounded = m_CardKeepers[i].TheCardsThatExposed[1];
                         cardFoundedIsTrue = true;
@@ -162,34 +163,35 @@ namespace Ex02
                     }
                 }
             }
+
             if (!cardFoundedIsTrue)
             {
-                cardFounded = ChooseARandomCardForComputer(random, i_board);
+                cardFounded = ChooseARandomCardForComputer(randomComputerChoose, i_Board);
             }
+
             return cardFounded;
         }
 
-        public int[] ChooseARandomCardForComputer(Random random, Board i_board)
+        public int[] ChooseARandomCardForComputer(Random i_RandomComputerChoose, Board i_Board)
         {
-            int height = random.Next(i_board.Height);
-            int width = random.Next(i_board.Width);
-            int[] randomCardChoseByComputer = { height, width }; // CHANGED: Switched order to match UserInterface
-            int value = i_board.GameBoard[height, width].Value;
+            int height = i_RandomComputerChoose.Next(i_Board.Height);
+            int width = i_RandomComputerChoose.Next(i_Board.Width);
+            int[] randomCardChoseByComputer = { height, width };
+            int value = i_Board.GameBoard[height, width].Value;
             bool theCardIsAlreadyIn, theCardIsAlreadyExposed, weFoundANewCard = false;
 
             while (!weFoundANewCard)
             {
                 theCardIsAlreadyIn = CheckIfTheCardIsAlreadyInTheArrey(value, randomCardChoseByComputer);
-                theCardIsAlreadyExposed = CheckIfTheCardIsAlreadyExposed(height, width, i_board);
+                theCardIsAlreadyExposed = CheckIfTheCardIsAlreadyExposed(height, width, i_Board);
 
                 if (theCardIsAlreadyExposed || theCardIsAlreadyIn)
                 {
-                    height = random.Next(i_board.Height);
-                    width = random.Next(i_board.Width);
-                    randomCardChoseByComputer[0] = height; // CHANGED: Switched order to match UserInterface
-                    randomCardChoseByComputer[1] = width; // CHANGED: Switched order to match UserInterface
-                    value = i_board.GameBoard[height, width].Value;
-
+                    height = i_RandomComputerChoose.Next(i_Board.Height);
+                    width = i_RandomComputerChoose.Next(i_Board.Width);
+                    randomCardChoseByComputer[0] = height;
+                    randomCardChoseByComputer[1] = width;
+                    value = i_Board.GameBoard[height, width].Value;
                     theCardIsAlreadyExposed = theCardIsAlreadyIn = false;
                 }
                 else
@@ -198,6 +200,7 @@ namespace Ex02
                     weFoundANewCard = true;
                 }
             }
+
             return randomCardChoseByComputer;
         }
 
@@ -207,7 +210,6 @@ namespace Ex02
 
             for (int j = 0; j < m_CardKeepers[i_Value].TheCardsThatExposed.Count; j++)
             {
-                // CHANGED: Switched order to match UserInterface
                 if (i_RandomCardChoseByComputer[0] == m_CardKeepers[i_Value].TheCardsThatExposed[j][0] &&
                             i_RandomCardChoseByComputer[1] == m_CardKeepers[i_Value].TheCardsThatExposed[j][1])
                 {
@@ -219,11 +221,11 @@ namespace Ex02
             return theCardIsAlreadyIn;
         }
 
-        public bool CheckIfTheCardIsAlreadyExposed(int i_Height, int i_Width, Board i_board)
+        public bool CheckIfTheCardIsAlreadyExposed(int i_Height, int i_Width, Board i_Board)
         {
             bool theCardIsAlreadyExposed = false;
 
-            if (i_board.GameBoard[i_Height, i_Width].IsExposed)
+            if (i_Board.GameBoard[i_Height, i_Width].IsExposed)
             {
                 theCardIsAlreadyExposed = true;
             }
@@ -233,17 +235,17 @@ namespace Ex02
 
         public void AddACardToTheArrey(int i_Value, int[] i_RandomCardChoseByComputer)
         {
-            m_CardKeepers[i_Value].TheCardsThatExposed.Add(i_RandomCardChoseByComputer); // CHANGED: Added clone to ensure original is not modified
+            m_CardKeepers[i_Value].TheCardsThatExposed.Add(i_RandomCardChoseByComputer);
             m_CardKeepers[i_Value].CardsExposed++;
         }
 
-        public void AddTheCardOfTheHumanToTheRememberArrey(int[] i_Card, Board i_board)
+        public void AddTheCardOfTheHumanToTheRememberArrey(int[] i_Card, Board i_Board)
         {
-            int value = i_board.GameBoard[i_Card[0], i_Card[1]].Value;
+            int value = i_Board.GameBoard[i_Card[0], i_Card[1]].Value;
             bool theCardIsAlreadyExposed, theCardIsAlreadyIn;
 
             theCardIsAlreadyIn = CheckIfTheCardIsAlreadyInTheArrey(value, i_Card);
-            theCardIsAlreadyExposed = CheckIfTheCardIsAlreadyExposed(i_Card[0], i_Card[1], i_board);
+            theCardIsAlreadyExposed = CheckIfTheCardIsAlreadyExposed(i_Card[0], i_Card[1], i_Board);
 
             if (!theCardIsAlreadyExposed && !theCardIsAlreadyIn)
             {
