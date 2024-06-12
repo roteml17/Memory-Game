@@ -97,13 +97,14 @@ namespace Ex02
                 for (int j = 0; j < m_BoardWidth; j++)
                 {
                     m_Board[i, j].IsExposed = false;
-                    int value = ChooseTheValueToPutIn(valuesOccurrences, randomNumberToPutInBoard);
+                    int value = chooseTheValueToPutIn(valuesOccurrences, randomNumberToPutInBoard);
                     m_Board[i, j].Value = value;
                 }
             }
         }
 
-        public int ChooseTheValueToPutIn(int[] i_ValuesOccurrences, Random i_RandomNumberToPutInBoard)
+        private int chooseTheValueToPutIn(int[] i_ValuesOccurrences, 
+                                                         Random i_RandomNumberToPutInBoard)
         {
             int value = i_RandomNumberToPutInBoard.Next(i_ValuesOccurrences.Length);
 

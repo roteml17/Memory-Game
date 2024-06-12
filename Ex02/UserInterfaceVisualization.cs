@@ -22,29 +22,25 @@ namespace Ex02
             return playerName;
         }
 
-        public void GetBoardBoundaries(ref int i_BoardHeight,ref int i_BoardWidth)
+        public void GetBoardBoundaries(ref int io_BoardHeight,ref int io_BoardWidth)
         {
             Console.Write("Please enter the board's height: ");
-            i_BoardHeight = int.Parse(Console.ReadLine());
-
-            while (!ValidationCheckForBoardHeight(i_BoardHeight, i_BoardWidth))
+            while (!int.TryParse(Console.ReadLine(), out io_BoardHeight) ||
+                     !validationCheckForBoardHeight(io_BoardHeight, io_BoardWidth))
             {
-                Console.Write("Height is out of boundaries, please enter again: ");
-                i_BoardHeight = int.Parse(Console.ReadLine());
+                Console.Write("Height is invalid or out of boundaries, please enter again: ");
             }
 
             Console.Write("Please enter the board's width: ");
-            i_BoardWidth = int.Parse(Console.ReadLine());
-
-            while (!ValidationCheckForBoardWidth(i_BoardHeight, i_BoardWidth) || 
-                !Board.CheckIfMultiplicationIsEven(i_BoardHeight, i_BoardWidth))
+            while (!int.TryParse(Console.ReadLine(), out io_BoardWidth) ||
+                     !validationCheckForBoardWidth(io_BoardHeight, io_BoardWidth) ||
+                       !Board.CheckIfMultiplicationIsEven(io_BoardHeight, io_BoardWidth))
             {
-                Console.Write("Width is out of boundaries, please enter again: ");
-                i_BoardWidth = int.Parse(Console.ReadLine());
+                Console.Write("Width is invalid or out of boundaries, please enter again: ");
             }
         }
 
-        public bool ValidationCheckForBoardHeight(int i_BoardHeight, int i_BoardWidth)
+        private bool validationCheckForBoardHeight(int i_BoardHeight, int i_BoardWidth)
         {
             bool validHeight = true;
 
@@ -57,7 +53,7 @@ namespace Ex02
             return validHeight;
         }
 
-        public bool ValidationCheckForBoardWidth(int i_BoardHeight, int i_BoardWidth)
+        private bool validationCheckForBoardWidth(int i_BoardHeight, int i_BoardWidth)
         {
             bool validWidth = true;
 
@@ -76,19 +72,19 @@ namespace Ex02
 
             for (int i = 0; i < i_BoardWidth; i++)
             {
-                Console.Write("     {0}", (char)('A' + i));
+                Console.Write(string.Format("     {0}", (char)('A' + i)));
             }
 
-            Console.WriteLine();
+            Console.Write(Environment.NewLine);
             Console.WriteLine(separator);
             for (int i = 0; i < i_BoardHeight; i++)
             {
-                Console.Write("{0} |", i + 1);
+                Console.Write(string.Format("{0} |", i + 1));
                 for (int j = 0; j < i_BoardWidth; j++)
                 {
                     if (i_Board.GameBoard[i, j].IsExposed)
                     {
-                        Console.Write("  {0}  |", i_Arrey[i_Board.GameBoard[i, j].Value]);
+                        Console.Write(string.Format("  {0}  |", i_Arrey[i_Board.GameBoard[i, j].Value]));
                     }
                     else
                     {
@@ -96,7 +92,7 @@ namespace Ex02
                     }
                 }
 
-                Console.WriteLine();
+                Console.Write(Environment.NewLine);
                 Console.WriteLine(separator);
             }
         }
@@ -110,7 +106,7 @@ namespace Ex02
 
             Console.Write("Please enter a card place: ");
             cardPlace = Console.ReadLine();
-            CheckIfTheUserPutOnlyRowOrOnlyColumn(ref cardPlace);
+            checkIfTheUserPutOnlyRowOrOnlyColumn(ref cardPlace);
 
             if (cardPlace == k_ExitGame)
             {
@@ -118,8 +114,8 @@ namespace Ex02
             }
             else
             {
-                ConvertToCoordinateInTheBoard(out column, out row, cardPlace);
-                CheckValitationOfTheChosenCard(ref isValidLocation, ref isExposed, 
+                convertToCoordinateInTheBoard(out column, out row, cardPlace);
+                checkValitationOfTheChosenCard(ref isValidLocation, ref isExposed, 
                                                  i_Board, row, column);
                 while (!isValidLocation || isExposed)
                 {
@@ -133,9 +129,9 @@ namespace Ex02
                     }
 
                     cardPlace = Console.ReadLine();
-                    CheckIfTheUserPutOnlyRowOrOnlyColumn(ref cardPlace);
-                    ConvertToCoordinateInTheBoard(out column, out row, cardPlace);
-                    CheckValitationOfTheChosenCard(ref isValidLocation, ref isExposed, 
+                    checkIfTheUserPutOnlyRowOrOnlyColumn(ref cardPlace);
+                    convertToCoordinateInTheBoard(out column, out row, cardPlace);
+                    checkValitationOfTheChosenCard(ref isValidLocation, ref isExposed, 
                                                      i_Board, row, column);
                 }
 
@@ -146,10 +142,11 @@ namespace Ex02
             return returnedCardPlace;
         }
 
-        public void ConvertToCoordinateInTheBoard(out int o_Column,out int o_Row, string cardPlace)
+        private void convertToCoordinateInTheBoard(out int o_Column, out int o_Row, 
+                                                                     string i_CardPlace)
         {
-            o_Column = cardPlace[0] - 'A';
-            o_Row = cardPlace[1] - '0' - 1;
+            o_Column = i_CardPlace[0] - 'A';
+            o_Row = i_CardPlace[1] - '0' - 1;
         }
 
         public int ChooseBetweenComputerAndHuman()
@@ -157,11 +154,9 @@ namespace Ex02
             int theUserChose;
 
             Console.WriteLine("Would you like to play against another player or against the computer?");
-            Console.WriteLine("(1) Computer");
-            Console.WriteLine("(2) Another player");
+            Console.WriteLine("(1) Computer" + Environment.NewLine + "(2) Another player");
             theUserChose = int.Parse(Console.ReadLine());
-
-            while (!ValidationCheckForComputerVsHuman(theUserChose))
+            while (!validationCheckForComputerVsHuman(theUserChose))
             {
                 Console.Write("Unvalid choose! Please choose between 1 or 2: ");
                 theUserChose = int.Parse(Console.ReadLine());
@@ -170,30 +165,33 @@ namespace Ex02
             return theUserChose;
         }
 
-        public void CheckIfTheUserPutOnlyRowOrOnlyColumn(ref string io_CardPlace)
+        private void checkIfTheUserPutOnlyRowOrOnlyColumn(ref string io_CardPlace)
         {
-            while (io_CardPlace.Length != (int)eGameConfig.CardArreySize && io_CardPlace != k_ExitGame) 
+            while (io_CardPlace.Length != (int)eGameConfig.CardArreySize &&
+                      io_CardPlace != k_ExitGame) 
             {
                 Console.Write("Invalid selection of row and column, please enter again: ");
                 io_CardPlace = Console.ReadLine();
             }
         }
 
-        public void CheckValitationOfTheChosenCard(ref bool io_IsValidLocation, 
-                                                    ref bool io_IsExposed, Board i_Board, int row, int column)
+        private void checkValitationOfTheChosenCard(ref bool io_IsValidLocation, 
+                                                    ref bool io_IsExposed, Board i_Board, 
+                                                    int i_Row, int i_Column)
         {
-            io_IsValidLocation = i_Board.IsValidCardPlace(row, column);
+            io_IsValidLocation = i_Board.IsValidCardPlace(i_Row, i_Column);
             if (io_IsValidLocation)
             {
-                io_IsExposed = i_Board.IsAlreadyExposed(row, column);
+                io_IsExposed = i_Board.IsAlreadyExposed(i_Row, i_Column);
             }
         }
 
-        public bool ValidationCheckForComputerVsHuman(int i_TheUserChose)
+        private bool validationCheckForComputerVsHuman(int i_TheUserChose)
         {
             bool validChoose = true;
 
-            if (i_TheUserChose != (int)eGameConfig.ComputerChoice && i_TheUserChose != (int)eGameConfig.AnotherPlayerChoice)
+            if (i_TheUserChose != (int)eGameConfig.ComputerChoice && 
+                  i_TheUserChose != (int)eGameConfig.AnotherPlayerChoice)
             {
                 validChoose = false;
             }
@@ -203,13 +201,13 @@ namespace Ex02
 
         public char EndOfGameMessage(Player i_Player1, Player i_Player2)
         {
-            Console.WriteLine("{0}: {1}", i_Player1.Name, i_Player1.Score);
-            Console.WriteLine("{0}: {1}", i_Player2.Name, i_Player2.Score);
+            Console.WriteLine(string.Format("{0}: {1}", i_Player1.Name, i_Player1.Score));
+            Console.WriteLine(string.Format("{0}: {1}", i_Player2.Name, i_Player2.Score));
             Console.Write("Do you want to play another game? Y/N: ");
+
             char response = char.Parse(Console.ReadLine().ToUpper());
 
             return response;
         }
-
     }
 }

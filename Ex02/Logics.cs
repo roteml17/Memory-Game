@@ -26,6 +26,7 @@ namespace Ex02
                 m_NumberOfPairsThatExposed = value;
             }
         }
+
         public bool CheckIfMatchesCardsAndTurningThem(int[] i_Card1, int[] i_Card2, Board i_Board)
         {
             int RowsCard1 = i_Card1[0];
@@ -34,7 +35,8 @@ namespace Ex02
             int ColumnCard2 = i_Card2[1];
             bool cardAreEqual = true;
 
-            if (i_Board.GameBoard[RowsCard1, ColumnCard1].Value != i_Board.GameBoard[RowsCard2, ColumnCard2].Value)
+            if (i_Board.GameBoard[RowsCard1, ColumnCard1].Value 
+                != i_Board.GameBoard[RowsCard2, ColumnCard2].Value)
             {
                 i_Board.GameBoard[RowsCard1, ColumnCard1].IsExposed = false;
                 i_Board.GameBoard[RowsCard2, ColumnCard2].IsExposed = false;
@@ -49,6 +51,7 @@ namespace Ex02
 
             return cardAreEqual;
         }
+
         public bool CheckEndGame(Board i_Board)
         {
             bool endGame = false;

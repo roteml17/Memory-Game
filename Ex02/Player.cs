@@ -46,9 +46,9 @@ namespace Ex02
         private string m_PlayerNmae;
         private int m_PlayerScore;
         private bool m_IsHuman;
-        bool m_MyTurn;
-        int m_SizeCardKeepers;
-        List<CardKeeper> m_CardKeepers;
+        private bool m_MyTurn;
+        private int m_SizeCardKeepers;
+        private List<CardKeeper> m_CardKeepers;
 
         public Player(string i_Name, bool i_IsHuman, bool i_MyTurn)
         {
@@ -166,13 +166,13 @@ namespace Ex02
 
             if (!cardFoundedIsTrue)
             {
-                cardFounded = ChooseARandomCardForComputer(randomComputerChoose, i_Board);
+                cardFounded = chooseARandomCardForComputer(randomComputerChoose, i_Board);
             }
 
             return cardFounded;
         }
 
-        public int[] ChooseARandomCardForComputer(Random i_RandomComputerChoose, Board i_Board)
+        private int[] chooseARandomCardForComputer(Random i_RandomComputerChoose, Board i_Board)
         {
             int height = i_RandomComputerChoose.Next(i_Board.Height);
             int width = i_RandomComputerChoose.Next(i_Board.Width);
@@ -182,9 +182,8 @@ namespace Ex02
 
             while (!weFoundANewCard)
             {
-                theCardIsAlreadyIn = CheckIfTheCardIsAlreadyInTheArrey(value, randomCardChoseByComputer);
-                theCardIsAlreadyExposed = CheckIfTheCardIsAlreadyExposed(height, width, i_Board);
-
+                theCardIsAlreadyIn = checkIfTheCardIsAlreadyInTheArrey(value, randomCardChoseByComputer);
+                theCardIsAlreadyExposed = checkIfTheCardIsAlreadyExposed(height, width, i_Board);
                 if (theCardIsAlreadyExposed || theCardIsAlreadyIn)
                 {
                     height = i_RandomComputerChoose.Next(i_Board.Height);
@@ -196,7 +195,7 @@ namespace Ex02
                 }
                 else
                 {
-                    AddACardToTheArrey(value, randomCardChoseByComputer);
+                    addACardToTheArrey(value, randomCardChoseByComputer);
                     weFoundANewCard = true;
                 }
             }
@@ -204,7 +203,7 @@ namespace Ex02
             return randomCardChoseByComputer;
         }
 
-        public bool CheckIfTheCardIsAlreadyInTheArrey(int i_Value, int[] i_RandomCardChoseByComputer)
+        private bool checkIfTheCardIsAlreadyInTheArrey(int i_Value, int[] i_RandomCardChoseByComputer)
         {
             bool theCardIsAlreadyIn = false;
 
@@ -221,7 +220,7 @@ namespace Ex02
             return theCardIsAlreadyIn;
         }
 
-        public bool CheckIfTheCardIsAlreadyExposed(int i_Height, int i_Width, Board i_Board)
+        private bool checkIfTheCardIsAlreadyExposed(int i_Height, int i_Width, Board i_Board)
         {
             bool theCardIsAlreadyExposed = false;
 
@@ -233,7 +232,7 @@ namespace Ex02
             return theCardIsAlreadyExposed;
         }
 
-        public void AddACardToTheArrey(int i_Value, int[] i_RandomCardChoseByComputer)
+        private void addACardToTheArrey(int i_Value, int[] i_RandomCardChoseByComputer)
         {
             m_CardKeepers[i_Value].TheCardsThatExposed.Add(i_RandomCardChoseByComputer);
             m_CardKeepers[i_Value].CardsExposed++;
@@ -244,14 +243,12 @@ namespace Ex02
             int value = i_Board.GameBoard[i_Card[0], i_Card[1]].Value;
             bool theCardIsAlreadyExposed, theCardIsAlreadyIn;
 
-            theCardIsAlreadyIn = CheckIfTheCardIsAlreadyInTheArrey(value, i_Card);
-            theCardIsAlreadyExposed = CheckIfTheCardIsAlreadyExposed(i_Card[0], i_Card[1], i_Board);
-
+            theCardIsAlreadyIn = checkIfTheCardIsAlreadyInTheArrey(value, i_Card);
+            theCardIsAlreadyExposed = checkIfTheCardIsAlreadyExposed(i_Card[0], i_Card[1], i_Board);
             if (!theCardIsAlreadyExposed && !theCardIsAlreadyIn)
             {
-                AddACardToTheArrey(value, i_Card);
+                addACardToTheArrey(value, i_Card);
             }
-
         }
     }
 }
