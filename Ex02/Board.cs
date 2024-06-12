@@ -41,6 +41,7 @@ namespace Ex02
         private cell[,] m_Board;
         private int m_BoardHeight;
         private int m_BoardWidth;
+        private const int k_MaximumOccursOfACard = 2;
 
         public cell[,] GameBoard
         {
@@ -106,7 +107,7 @@ namespace Ex02
         {
             int value = i_RandomNumberToPutInBoard.Next(i_ValuesOccurrences.Length);
 
-            while (i_ValuesOccurrences[value] == 2)
+            while (i_ValuesOccurrences[value] == k_MaximumOccursOfACard)
             {
                 value = i_RandomNumberToPutInBoard.Next(i_ValuesOccurrences.Length);
             }

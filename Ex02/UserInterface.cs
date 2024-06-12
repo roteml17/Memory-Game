@@ -16,9 +16,10 @@ namespace Ex02
         private int m_BoardWidth;
         private Logics gameLogic;
         private UserInterfaceVisualization visualization;
+        static int[] card1OfHumanPlayer = new int[(int)eGameConfig.CardArreySize];
+        static int[] card2OfHumanPlayer = new int[(int)eGameConfig.CardArreySize];
+        private const char k_ChooseQuitTheGame = 'N';
 
-        static int[] card1OfHumanPlayer = new int[2];
-        static int[] card2OfHumanPlayer = new int[2];
         public UserInterface()
         {
             m_BoardHeight = 0;
@@ -40,7 +41,7 @@ namespace Ex02
             Player player1 = new Player(player1Name, true, currentTurn);
             againstComputerOrHuman = visualization.ChooseBetweenComputerAndHuman();
 
-            if (againstComputerOrHuman == 2)
+            if (againstComputerOrHuman == (int)eGameConfig.AnotherPlayerChoice)
             {
                 player2Name = visualization.GetANameFromUser();
                 player2isHuman = true;
@@ -76,7 +77,7 @@ namespace Ex02
                 if (gameLogic.CheckEndGame(board))
                 {
                     char response = visualization.EndOfGameMessage(player1, player2);
-                    if (response == 'N')
+                    if (response == k_ChooseQuitTheGame)
                     {
                         break;
                     }
@@ -93,7 +94,7 @@ namespace Ex02
         public bool SelectCards(Board i_Board, char[] i_Arrey, Player i_Player)
         {
             bool continueGame = true;
-           
+
             if (i_Player.IsHuman)
             {
                 Console.WriteLine("{0}, it's your turn!", i_Player.Name);
@@ -133,6 +134,8 @@ namespace Ex02
                 Ex02.ConsoleUtils.Screen.Clear();
                 visualization.PrintBoard(i_Board, i_Arrey, m_BoardHeight, m_BoardWidth);
 
+                System.Threading.Thread.Sleep(2000);
+
                 Console.WriteLine("{0}, it's your turn!", i_Player.Name);
                 i_Player.Card2 = i_Player.ComputerIsPlaying(i_Board);
                 i_Board.OpenCardPlace(i_Player.Card2[0], i_Player.Card2[1]);
@@ -141,6 +144,7 @@ namespace Ex02
 
                 System.Threading.Thread.Sleep(2000);
             }
+
             return continueGame;
         }
 
@@ -148,7 +152,7 @@ namespace Ex02
                                        bool i_CurrentTurn, char[] i_Arrey, int i_AgainstComputerOrHuman)
         {
             visualization.GetBoardBoundaries(ref m_BoardHeight, ref m_BoardWidth);
-            if (i_AgainstComputerOrHuman == 1)
+            if (i_AgainstComputerOrHuman == (int)eGameConfig.ComputerChoice)
             {
                 io_Player2 = new Player(i_Player2isHuman, !i_CurrentTurn, (m_BoardHeight * m_BoardWidth) / 2);
             }

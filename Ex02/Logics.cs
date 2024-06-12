@@ -39,16 +39,16 @@ namespace Ex02
                 i_Board.GameBoard[RowsCard1, ColumnCard1].IsExposed = false;
                 i_Board.GameBoard[RowsCard2, ColumnCard2].IsExposed = false;
                 cardAreEqual = false;
-                System.Threading.Thread.Sleep(2000);
             }
             else
             {
                 m_NumberOfPairsThatExposed++;
             }
 
+            System.Threading.Thread.Sleep(2000);
+
             return cardAreEqual;
         }
-
         public bool CheckEndGame(Board i_Board)
         {
             bool endGame = false;

@@ -10,6 +10,7 @@ namespace Ex02
     {
         private const int k_MinimumBoardBoundaries = 4;
         private const int k_MaximumBoardBoundaries = 6;
+        private const string k_ExitGame = "Q";
 
         public string GetANameFromUser()
         {
@@ -103,7 +104,7 @@ namespace Ex02
         public int[] GetACardPlaceFromUser(Board i_Board)
         {
             string cardPlace;
-            int[] returnedCardPlace = new int[2];
+            int[] returnedCardPlace = new int[(int)eGameConfig.CardArreySize];
             bool isValidLocation = true, isExposed = false;
             int row, column;
 
@@ -111,7 +112,7 @@ namespace Ex02
             cardPlace = Console.ReadLine();
             CheckIfTheUserPutOnlyRowOrOnlyColumn(ref cardPlace);
 
-            if (cardPlace == "Q")
+            if (cardPlace == k_ExitGame)
             {
                 returnedCardPlace = null;
             }
@@ -171,7 +172,7 @@ namespace Ex02
 
         public void CheckIfTheUserPutOnlyRowOrOnlyColumn(ref string io_CardPlace)
         {
-            while (io_CardPlace.Length != 2 && io_CardPlace != "Q") 
+            while (io_CardPlace.Length != (int)eGameConfig.CardArreySize && io_CardPlace != k_ExitGame) 
             {
                 Console.Write("Invalid selection of row and column, please enter again: ");
                 io_CardPlace = Console.ReadLine();
@@ -192,7 +193,7 @@ namespace Ex02
         {
             bool validChoose = true;
 
-            if (i_TheUserChose != 1 && i_TheUserChose != 2)
+            if (i_TheUserChose != (int)eGameConfig.ComputerChoice && i_TheUserChose != (int)eGameConfig.AnotherPlayerChoice)
             {
                 validChoose = false;
             }

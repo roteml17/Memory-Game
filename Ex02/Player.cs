@@ -145,7 +145,7 @@ namespace Ex02
 
             for (int i = 0; i < m_SizeCardKeepers; i++)
             {
-                if (m_CardKeepers[i].CardsExposed == 2)
+                if (m_CardKeepers[i].CardsExposed == (int)eGameConfig.CardArreySize)
                 {
                     if (!i_Board.GameBoard[m_CardKeepers[i].TheCardsThatExposed[0][0], 
                         m_CardKeepers[i].TheCardsThatExposed[0][1]].IsExposed)
